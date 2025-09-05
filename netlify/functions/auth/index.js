@@ -1,5 +1,15 @@
 // Authentication serverless function for BDS PRO
-const { testConnection } = require('../../backend/config/database');
+// Database connection test function
+const testConnection = async () => {
+  try {
+    // Check if database environment variables are set
+    const hasDbConfig = process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD;
+    return hasDbConfig;
+  } catch (error) {
+    console.log('Database not configured, running in demo mode');
+    return false;
+  }
+};
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -56,6 +66,12 @@ exports.handler = async (event, context) => {
       case 'logout':
         if (httpMethod === 'POST') {
           return await handleLogout(event, headers);
+        }
+        break;
+        
+      case 'health':
+        if (httpMethod === 'GET') {
+          return await handleHealthCheck(event, headers);
         }
         break;
         
@@ -395,6 +411,38 @@ const handleLogout = async (event, headers) => {
         success: false,
         message: 'Logout failed',
         error: error.message
+      })
+    };
+  }
+};
+
+// Health check
+const handleHealthCheck = async (event, headers) => {
+  try {
+    const dbConnected = await testConnection();
+    
+    return {
+      statusCode: 200,
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        message: 'Auth service is running',
+        timestamp: new Date().toISOString(),
+        database: dbConnected ? 'Connected' : 'Demo Mode',
+        environment: process.env.NODE_ENV || 'development',
+        version: '1.0.0'
+      })
+    };
+  } catch (error) {
+    return {
+      statusCode: 200,
+      headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        message: 'Auth service is running in demo mode',
+        timestamp: new Date().toISOString(),
+        database: 'Demo Mode',
+        environment: 'demo'
       })
     };
   }

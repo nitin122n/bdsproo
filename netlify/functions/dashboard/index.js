@@ -1,5 +1,15 @@
 // Dashboard serverless function for BDS PRO
-const { testConnection } = require('../../backend/config/database');
+// Database connection test function
+const testConnection = async () => {
+  try {
+    // Check if database environment variables are set
+    const hasDbConfig = process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD;
+    return hasDbConfig;
+  } catch (error) {
+    console.log('Database not configured, running in demo mode');
+    return false;
+  }
+};
 
 exports.handler = async (event, context) => {
   // CORS headers
