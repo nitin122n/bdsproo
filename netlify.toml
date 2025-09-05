@@ -1,0 +1,139 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+  functions = "netlify/functions"
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_PUBLIC_FIREBASE_API_KEY = "demo-api-key"
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "demo-project.firebaseapp.com"
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID = "demo-project"
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "demo-project.appspot.com"
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "123456789"
+  NEXT_PUBLIC_FIREBASE_APP_ID = "demo-app-id"
+  
+  # Database Configuration - Railway (MySQL)
+  # Your actual Railway credentials
+  DB_HOST = "switchback.proxy.rlwy.net"
+  DB_USER = "root"
+  DB_PASSWORD = "your-railway-password"
+  DB_NAME = "railway"
+  DB_PORT = "28780"
+  
+  # Option 1: PlanetScale (MySQL-compatible)
+  # DB_HOST = "aws.connect.psdb.cloud"
+  # DB_USER = "your-planetscale-username"
+  # DB_PASSWORD = "your-planetscale-password"
+  # DB_NAME = "bds-pro-db"
+  # DB_PORT = "3306"
+  
+  # Option 3: Neon (PostgreSQL)
+  # DB_HOST = "ep-xxx.us-east-1.aws.neon.tech"
+  # DB_USER = "your-username"
+  # DB_PASSWORD = "your-password"
+  # DB_NAME = "neondb"
+  # DB_PORT = "5432"
+  
+  # JWT Configuration
+  JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production"
+  JWT_EXPIRES_IN = "24h"
+  
+  # API Configuration - This will be automatically set by Netlify
+  # NEXT_PUBLIC_API_URL = "https://your-site-name.netlify.app"
+
+[[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/dashboard/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/user/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/stats/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/transactions/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/referrals/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/deposits/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/withdraw/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/balance/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/history/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/plans/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/setup-database"
+  to = "/.netlify/functions/setup-database"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
