@@ -12,11 +12,11 @@
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "123456789"
   NEXT_PUBLIC_FIREBASE_APP_ID = "demo-app-id"
   
-  # Database Configuration (Choose one option)
-  # Option 1: PlanetScale (MySQL-compatible)
+  # Database Configuration - PlanetScale (MySQL-compatible)
+  # Replace these with your actual PlanetScale credentials
   DB_HOST = "aws.connect.psdb.cloud"
-  DB_USER = "your-username"
-  DB_PASSWORD = "your-password"
+  DB_USER = "your-planetscale-username"
+  DB_PASSWORD = "your-planetscale-password"
   DB_NAME = "bds-pro-db"
   DB_PORT = "3306"
   
