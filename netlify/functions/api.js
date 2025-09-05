@@ -22,12 +22,18 @@ exports.handler = async (event, context) => {
     const { path, httpMethod, body } = event;
     
     // Route handling
-    if (path.includes('/api/auth/register') && httpMethod === 'POST') {
-      return handleRegister(event, headers);
-    } else if (path.includes('/api/auth/google') && httpMethod === 'GET') {
-      return handleGoogleAuth(event, headers);
-    } else if (path.includes('/api/auth/login') && httpMethod === 'POST') {
-      return handleLogin(event, headers);
+    if (path.includes('/api/auth/')) {
+      // Redirect to auth function
+      const authFunction = require('./auth');
+      return authFunction.handler(event, context);
+    } else if (path.includes('/api/dashboard/') || path.includes('/api/user/') || path.includes('/api/stats/') || path.includes('/api/transactions/') || path.includes('/api/referrals/')) {
+      // Redirect to dashboard function
+      const dashboardFunction = require('./dashboard');
+      return dashboardFunction.handler(event, context);
+    } else if (path.includes('/api/deposits/') || path.includes('/api/withdraw/') || path.includes('/api/balance/') || path.includes('/api/history/')) {
+      // Redirect to deposits function
+      const depositsFunction = require('./deposits');
+      return depositsFunction.handler(event, context);
     } else if (path.includes('/api/health') || path === '/api') {
       return handleHealthCheck(event, headers);
     }

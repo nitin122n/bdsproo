@@ -42,6 +42,56 @@
   # NEXT_PUBLIC_API_URL = "https://your-site-name.netlify.app"
 
 [[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/dashboard/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/user/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/stats/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/transactions/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/referrals/*"
+  to = "/.netlify/functions/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/deposits/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/withdraw/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/balance/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
+  from = "/api/history/*"
+  to = "/.netlify/functions/deposits"
+  status = 200
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api"
   status = 200
