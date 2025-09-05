@@ -46,7 +46,8 @@ const SignupForm = () => {
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

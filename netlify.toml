@@ -38,8 +38,8 @@
   JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production"
   JWT_EXPIRES_IN = "24h"
   
-  # API Configuration
-  NEXT_PUBLIC_API_URL = "https://your-site-name.netlify.app"
+  # API Configuration - This will be automatically set by Netlify
+  # NEXT_PUBLIC_API_URL = "https://your-site-name.netlify.app"
 
 [[redirects]]
   from = "/api/*"

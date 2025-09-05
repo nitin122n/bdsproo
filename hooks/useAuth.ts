@@ -27,8 +27,9 @@ export const useAuth = () => {
     try {
       setLoading(true);
       
-      // Redirect to backend Google OAuth
-      window.location.href = 'http://localhost:5001/api/auth/google';
+      // Use environment variable or current origin for API URL
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+      window.location.href = `${apiUrl}/api/auth/google`;
       
     } catch (error: any) {
       console.error('Google sign-in error:', error);
