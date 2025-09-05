@@ -1,16 +1,29 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
+// Detect if we're running in a cloud environment
+const isCloudEnvironment = process.env.NODE_ENV === 'production' || 
+                          process.env.NETLIFY === 'true' || 
+                          process.env.VERCEL === 'true' ||
+                          process.env.RAILWAY_ENVIRONMENT === 'production';
+
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'bds_pro_db',
-    port: process.env.DB_PORT || 3307,
+    port: parseInt(process.env.DB_PORT) || 3306,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: isCloudEnvironment ? 5 : 10, // Lower limit for cloud
     queueLimit: 0,
-    multipleStatements: true
+    multipleStatements: true,
+    // SSL configuration for cloud databases
+    ssl: isCloudEnvironment ? {
+        rejectUnauthorized: false
+    } : false,
+    // Connection timeout for cloud databases
+    acquireTimeout: isCloudEnvironment ? 60000 : 10000,
+    timeout: isCloudEnvironment ? 60000 : 10000
 };
 
 // Create connection pool

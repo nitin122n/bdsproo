@@ -1,6 +1,7 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
@@ -10,6 +11,40 @@
   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET = "demo-project.appspot.com"
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "123456789"
   NEXT_PUBLIC_FIREBASE_APP_ID = "demo-app-id"
+  
+  # Database Configuration (Choose one option)
+  # Option 1: PlanetScale (MySQL-compatible)
+  DB_HOST = "aws.connect.psdb.cloud"
+  DB_USER = "your-username"
+  DB_PASSWORD = "your-password"
+  DB_NAME = "bds-pro-db"
+  DB_PORT = "3306"
+  
+  # Option 2: Railway (MySQL)
+  # DB_HOST = "containers-us-west-xxx.railway.app"
+  # DB_USER = "root"
+  # DB_PASSWORD = "your-password"
+  # DB_NAME = "railway"
+  # DB_PORT = "3306"
+  
+  # Option 3: Neon (PostgreSQL)
+  # DB_HOST = "ep-xxx.us-east-1.aws.neon.tech"
+  # DB_USER = "your-username"
+  # DB_PASSWORD = "your-password"
+  # DB_NAME = "neondb"
+  # DB_PORT = "5432"
+  
+  # JWT Configuration
+  JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production"
+  JWT_EXPIRES_IN = "24h"
+  
+  # API Configuration
+  NEXT_PUBLIC_API_URL = "https://your-site-name.netlify.app"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
 
 [[redirects]]
   from = "/*"
