@@ -1,0 +1,16 @@
+# API Routes
+/api/auth/* /.netlify/functions/auth 200
+/api/dashboard/* /.netlify/functions/dashboard 200
+/api/user/* /.netlify/functions/dashboard 200
+/api/stats/* /.netlify/functions/dashboard 200
+/api/transactions/* /.netlify/functions/dashboard 200
+/api/referrals/* /.netlify/functions/dashboard 200
+/api/deposits/* /.netlify/functions/deposits 200
+/api/withdraw/* /.netlify/functions/deposits 200
+/api/balance/* /.netlify/functions/deposits 200
+/api/history/* /.netlify/functions/deposits 200
+/api/plans/* /.netlify/functions/deposits 200
+/api/* /.netlify/functions/api 200
+
+# SPA fallback
+/* /index.html 200

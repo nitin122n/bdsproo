@@ -3,6 +3,20 @@
   publish = ".next"
   functions = "netlify/functions"
 
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
 [build.environment]
   NODE_VERSION = "20"
   NEXT_PUBLIC_FIREBASE_API_KEY = "demo-api-key"
