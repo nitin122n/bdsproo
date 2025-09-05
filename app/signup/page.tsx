@@ -1,6 +1,11 @@
 "use client";
+import { Suspense } from 'react';
 import SignupForm from '@/components/SignupForm';
 import { motion } from 'framer-motion';
+
+function SignupFormWrapper() {
+  return <SignupForm />;
+}
 
 export default function SignupPage() {
   return (
@@ -16,7 +21,9 @@ export default function SignupPage() {
           <p className="text-gray-600">Join the future of crypto trading</p>
         </motion.div>
         
-        <SignupForm />
+        <Suspense fallback={<div className="text-center">Loading...</div>}>
+          <SignupFormWrapper />
+        </Suspense>
       </div>
     </div>
   );
