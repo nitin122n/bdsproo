@@ -41,18 +41,23 @@ const LoginForm = () => {
       });
 
       const result = await response.json();
+      console.log('Login response:', result); // Debug log
 
       if (response.ok && result.success) {
         // Store token and user data
         if (result.data.token) {
           localStorage.setItem('authToken', result.data.token);
+          console.log('Token stored:', result.data.token); // Debug log
         }
         if (result.data.user) {
           localStorage.setItem('userData', JSON.stringify(result.data.user));
+          console.log('User data stored:', result.data.user); // Debug log
         }
         toast.success('Login successful!');
+        console.log('Redirecting to dashboard...'); // Debug log
         router.push('/dashboard');
       } else {
+        console.error('Login failed:', result); // Debug log
         throw new Error(result.message || 'Login failed');
       }
     } catch (error: any) {

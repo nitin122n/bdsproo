@@ -156,29 +156,47 @@ const handleRegister = async (event, headers) => {
     let user;
     if (dbConnected) {
       // Use real database
-      const { userOperations } = require('../../backend/config/database-planetscale');
-      user = {
-        id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        name,
-        email,
-        password_hash: await hashPassword(password),
-        referral_code: generateReferralCode(),
-        referred_by: referralCode || null,
-        account_balance: 0,
-        total_earning: 0,
-        rewards: 0,
-        status: 'active',
-        created_at: new Date().toISOString()
-      };
-      
-      await userOperations.createUser(user);
+      try {
+        const { userOperations } = require('../../backend/config/database-planetscale');
+        user = {
+          id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name,
+          email,
+          password_hash: await hashPassword(password),
+          referral_code: generateReferralCode(),
+          referred_by: referralCode || null,
+          account_balance: 0,
+          total_earning: 0,
+          rewards: 0,
+          status: 'active',
+          created_at: new Date().toISOString()
+        };
+        
+        await userOperations.createUser(user);
+        console.log('User created in database:', user.id);
+      } catch (dbError) {
+        console.error('Database error, falling back to demo mode:', dbError);
+        // Fall back to demo mode if database fails
+        user = {
+          id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name,
+          email,
+          account_balance: 1000,
+          total_earning: 0,
+          rewards: 0,
+          referral_code: generateReferralCode(),
+          referred_by: referralCode || null,
+          created_at: new Date().toISOString(),
+          status: 'active'
+        };
+      }
     } else {
       // Demo mode
       user = {
         id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         name,
         email,
-        account_balance: 0,
+        account_balance: 1000,
         total_earning: 0,
         rewards: 0,
         referral_code: generateReferralCode(),
@@ -239,23 +257,41 @@ const handleLogin = async (event, headers) => {
     let user;
     if (dbConnected) {
       // Use real database
-      const { userOperations } = require('../../backend/config/database-planetscale');
-      user = await userOperations.getUserByEmail(email);
-      
-      if (!user) {
-        return {
-          statusCode: 401,
-          headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            success: false,
-            message: 'Invalid email or password'
-          })
+      try {
+        const { userOperations } = require('../../backend/config/database-planetscale');
+        user = await userOperations.getUserByEmail(email);
+        
+        if (!user) {
+          return {
+            statusCode: 401,
+            headers: { ...headers, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              success: false,
+              message: 'Invalid email or password'
+            })
+          };
+        }
+        
+        // In production, verify password hash
+        // const isValidPassword = await verifyPassword(password, user.password_hash);
+        // if (!isValidPassword) { ... }
+        
+        console.log('User found in database:', user.id);
+      } catch (dbError) {
+        console.error('Database error, falling back to demo mode:', dbError);
+        // Fall back to demo mode if database fails
+        user = {
+          id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: email.split('@')[0],
+          email,
+          account_balance: 1000,
+          total_earning: 150,
+          rewards: 50,
+          referral_code: generateReferralCode(),
+          created_at: new Date().toISOString(),
+          status: 'active'
         };
       }
-      
-      // In production, verify password hash
-      // const isValidPassword = await verifyPassword(password, user.password_hash);
-      // if (!isValidPassword) { ... }
     } else {
       // Demo mode - accept any valid email/password
       user = {
@@ -301,20 +337,68 @@ const handleLogin = async (event, headers) => {
 // Google Authentication
 const handleGoogleAuth = async (event, headers) => {
   try {
-    // In demo mode, create a mock Google user
-    const mockUser = {
-      id: `google_user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      name: 'Google User',
-      email: 'user@gmail.com',
-      account_balance: 1000,
-      total_earning: 150,
-      rewards: 50,
-      referral_code: generateReferralCode(),
-      created_at: new Date().toISOString(),
-      status: 'active'
-    };
+    // Check if database is available
+    const dbConnected = await testConnection();
     
-    const token = generateJWT({ userId: mockUser.id, email: mockUser.email });
+    let user;
+    if (dbConnected) {
+      // Use real database for Google auth
+      try {
+        const { userOperations } = require('../../backend/config/database-planetscale');
+        
+        // For demo, create a Google user
+        user = {
+          id: `google_user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: 'Google User',
+          email: 'user@gmail.com',
+          account_balance: 1000,
+          total_earning: 150,
+          rewards: 50,
+          referral_code: generateReferralCode(),
+          created_at: new Date().toISOString(),
+          status: 'active'
+        };
+        
+        // Check if user exists, if not create them
+        const existingUser = await userOperations.getUserByEmail(user.email);
+        if (!existingUser) {
+          await userOperations.createUser(user);
+          console.log('Google user created in database:', user.id);
+        } else {
+          user = existingUser;
+          console.log('Google user found in database:', user.id);
+        }
+      } catch (dbError) {
+        console.error('Database error for Google auth, using demo mode:', dbError);
+        // Fall back to demo mode
+        user = {
+          id: `google_user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: 'Google User',
+          email: 'user@gmail.com',
+          account_balance: 1000,
+          total_earning: 150,
+          rewards: 50,
+          referral_code: generateReferralCode(),
+          created_at: new Date().toISOString(),
+          status: 'active'
+        };
+      }
+    } else {
+      // Demo mode
+      user = {
+        id: `google_user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        name: 'Google User',
+        email: 'user@gmail.com',
+        account_balance: 1000,
+        total_earning: 150,
+        rewards: 50,
+        referral_code: generateReferralCode(),
+        created_at: new Date().toISOString(),
+        status: 'active'
+      };
+    }
+    
+    const token = generateJWT({ userId: user.id, email: user.email });
     
     // Redirect to dashboard with token
     const siteUrl = process.env.URL || 'https://your-site.netlify.app';

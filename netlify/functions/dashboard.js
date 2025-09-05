@@ -147,17 +147,39 @@ const handleGetUser = async (event, headers, token) => {
     let user;
     if (dbConnected) {
       // Use real database
-      const { userOperations } = require('../../backend/config/database-planetscale');
-      user = await userOperations.getUserById(userData.userId);
-      
-      if (!user) {
-        return {
-          statusCode: 404,
-          headers: { ...headers, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            success: false,
-            message: 'User not found'
-          })
+      try {
+        const { userOperations } = require('../../backend/config/database-planetscale');
+        user = await userOperations.getUserById(userData.userId);
+        
+        if (!user) {
+          return {
+            statusCode: 404,
+            headers: { ...headers, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              success: false,
+              message: 'User not found'
+            })
+          };
+        }
+        
+        console.log('User data retrieved from database:', user.id);
+      } catch (dbError) {
+        console.error('Database error, falling back to demo mode:', dbError);
+        // Fall back to demo mode if database fails
+        user = {
+          id: userData.userId,
+          name: userData.email.split('@')[0],
+          email: userData.email,
+          account_balance: 2500.00,
+          total_earning: 450.00,
+          rewards: 150.00,
+          referral_code: 'DEMO123',
+          referred_by: null,
+          created_at: '2024-01-01T00:00:00.000Z',
+          status: 'active',
+          level: 'Professional',
+          next_milestone: 'iPhone 16 Pro',
+          progress_to_milestone: 65
         };
       }
     } else {

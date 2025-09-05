@@ -32,10 +32,14 @@ export default function DashboardPage() {
   // Check authentication on component mount
   useEffect(() => {
     const checkAuth = async () => {
+      console.log('Dashboard: Checking authentication...'); // Debug log
+      
       // Check for Google OAuth callback parameters
       const urlParams = new URLSearchParams(window.location.search);
       const token = urlParams.get('token');
       const userData = urlParams.get('user');
+
+      console.log('Dashboard: URL params - token:', !!token, 'userData:', !!userData); // Debug log
 
       if (token && userData) {
         // Handle Google OAuth callback
@@ -58,24 +62,41 @@ export default function DashboardPage() {
 
       // Regular token check
       const storedToken = localStorage.getItem('authToken');
+      console.log('Dashboard: Stored token exists:', !!storedToken); // Debug log
+      
       if (!storedToken) {
+        console.log('Dashboard: No token found, redirecting to login'); // Debug log
         router.push('/login');
         return;
       }
 
       try {
-        const response = await fetch('http://localhost:5001/api/auth/profile', {
-          headers: {
-            'Authorization': `Bearer ${storedToken}`,
-          },
-        });
-
-        if (response.ok) {
+        // Check if we have user data in localStorage
+        const storedUserData = localStorage.getItem('userData');
+        if (storedUserData) {
           setIsAuthenticated(true);
+          setUserData(JSON.parse(storedUserData));
         } else {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('userData');
-          router.push('/login');
+          // Try to get user data from API
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+          const response = await fetch(`${apiUrl}/api/dashboard/user?token=${storedToken}`, {
+            headers: {
+              'Authorization': `Bearer ${storedToken}`,
+            },
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data.user) {
+              setIsAuthenticated(true);
+              setUserData(result.data.user);
+              localStorage.setItem('userData', JSON.stringify(result.data.user));
+            } else {
+              throw new Error('Invalid response');
+            }
+          } else {
+            throw new Error('API call failed');
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
