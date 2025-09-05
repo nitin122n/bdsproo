@@ -148,7 +148,7 @@ const handleGetUser = async (event, headers, token) => {
     if (dbConnected) {
       // Use real database
       try {
-        const { userOperations } = require('../../backend/config/database-planetscale');
+        const { userOperations } = require('../../backend/config/database-railway');
         user = await userOperations.getUserById(userData.userId);
         
         if (!user) {
@@ -244,7 +244,7 @@ const handleGetStats = async (event, headers, token) => {
     let stats;
     if (dbConnected) {
       // Use real database
-      const { transactionOperations } = require('../../backend/config/database-planetscale');
+              const { transactionOperations } = require('../../backend/config/database-railway');
       const transactions = await transactionOperations.getUserTransactions(userData.userId, 100);
       
       stats = {
@@ -328,7 +328,7 @@ const handleGetTransactions = async (event, headers, token) => {
     let transactions;
     if (dbConnected) {
       // Use real database
-      const { transactionOperations } = require('../../backend/config/database-planetscale');
+              const { transactionOperations } = require('../../backend/config/database-railway');
       transactions = await transactionOperations.getUserTransactions(userData.userId, limit, offset);
     } else {
       // Demo mode

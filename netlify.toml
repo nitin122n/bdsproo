@@ -26,19 +26,19 @@
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID = "123456789"
   NEXT_PUBLIC_FIREBASE_APP_ID = "demo-app-id"
   
-  # Database Configuration - PlanetScale (MySQL-compatible)
-  # Replace these with your actual PlanetScale credentials
-  DB_HOST = "aws.connect.psdb.cloud"
-  DB_USER = "your-planetscale-username"
-  DB_PASSWORD = "your-planetscale-password"
-  DB_NAME = "bds-pro-db"
+  # Database Configuration - Railway (MySQL)
+  # Replace these with your actual Railway credentials
+  DB_HOST = "containers-us-west-xxx.railway.app"
+  DB_USER = "root"
+  DB_PASSWORD = "your-railway-password"
+  DB_NAME = "railway"
   DB_PORT = "3306"
   
-  # Option 2: Railway (MySQL)
-  # DB_HOST = "containers-us-west-xxx.railway.app"
-  # DB_USER = "root"
-  # DB_PASSWORD = "your-password"
-  # DB_NAME = "railway"
+  # Option 1: PlanetScale (MySQL-compatible)
+  # DB_HOST = "aws.connect.psdb.cloud"
+  # DB_USER = "your-planetscale-username"
+  # DB_PASSWORD = "your-planetscale-password"
+  # DB_NAME = "bds-pro-db"
   # DB_PORT = "3306"
   
   # Option 3: Neon (PostgreSQL)

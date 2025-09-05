@@ -157,7 +157,7 @@ const handleRegister = async (event, headers) => {
     if (dbConnected) {
       // Use real database
       try {
-        const { userOperations } = require('../../backend/config/database-planetscale');
+        const { userOperations } = require('../../backend/config/database-railway');
         user = {
           id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           name,
@@ -258,7 +258,7 @@ const handleLogin = async (event, headers) => {
     if (dbConnected) {
       // Use real database
       try {
-        const { userOperations } = require('../../backend/config/database-planetscale');
+        const { userOperations } = require('../../backend/config/database-railway');
         user = await userOperations.getUserByEmail(email);
         
         if (!user) {
@@ -344,7 +344,7 @@ const handleGoogleAuth = async (event, headers) => {
     if (dbConnected) {
       // Use real database for Google auth
       try {
-        const { userOperations } = require('../../backend/config/database-planetscale');
+        const { userOperations } = require('../../backend/config/database-railway');
         
         // For demo, create a Google user
         user = {
